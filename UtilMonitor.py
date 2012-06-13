@@ -57,23 +57,29 @@ class UsageCollector:
         self.processSoftIrqFile()
         self.processIrqSumFile()
 
-    def processUsageFile(self):
-        usageList = []
-        cpuutil.ParseUtil.processUsageFile(self.monitor.fileprefix + "_usage.txt", \
-            usageList)
+    def processDataFile(self, filename, outputlist):
+        scratchList = []
+        cpuutil.ParseUtil.processUsageFile(filename, scratchList)
         currTime = self.monitor.startTime
-        for entry in usageList:
-            self.monitor.usageStats.append((currTime, entry))
+        for entry in scratchList:
+            outputlist.append((currTime, entry))
             currTime += self.monitor.interval
+ 
+    def processUsageFile(self):
+        self.processDataFile(self.monitor.fileprefix + "_usage.txt", \
+            self.monitor.usageStats)
 
     def processIrqFile(self):
-        pass   
-        
+        self.processDataFile(self.monitor.fileprefix + "_irq.txt", \
+            self.monitor.irqStats)
+
     def processSoftIrqFile(self):
-        pass   
-    
+        self.processDataFile(self.monitor.fileprefix + "_softirq.txt", \
+            self.monitor.softIrqStats)
+
     def processIrqSumFile(self):
-        pass
+        self.processDataFile(self.monitor.fileprefix + "_sum.txt", \
+            self.monitor.irqSumStats)
 
 class UtilMonitor(threading.Thread):
     def __init__(self, startTime = None, \
@@ -105,7 +111,7 @@ class UtilMonitor(threading.Thread):
         # where statobj is one of usagestats, irqstats, softirqstats
         self.usageStats = []
         self.irqStats = []
-        self.softirqStats = []
+        self.softIrqStats = []
         self.irqSumStats = []
 
     def run(self):
