@@ -14,7 +14,7 @@ import cpuutil.ParseUtil
 
 class UsageCollector:
     '''
-    On init, runs a copy of mpstat which outputs to a file. 
+    On init, runs a copy of mpstat which outputs to a file.
     On shutdown, kills the mpstat process that it started, parses
     the file and stores the parsed data in memory.
     '''
@@ -37,18 +37,18 @@ class UsageCollector:
 
         self.sumProcess = subprocess.Popen(["mpstat", "-P", "ALL", "-I", "SUM",\
             str(self.monitor.interval)], stdout = self.irqSumFile)
-    
+
     def shutdown(self):
         self.usageProcess.kill()
         self.irqProcess.kill()
         self.softIrqProcess.kill()
         self.sumProcess.kill()
-        
-        self.usageFile.close() 
+
+        self.usageFile.close()
         self.irqFile.close()
         self.softIrqFile.close()
         self.irqSumFile.close()
-       
+
         self.processResults()
 
     def processResults(self):
@@ -64,7 +64,7 @@ class UsageCollector:
         for entry in scratchList:
             outputlist.append((currTime, entry))
             currTime += self.monitor.interval
- 
+
     def processUsageFile(self):
         self.processDataFile(self.monitor.fileprefix + "_usage.txt", \
             self.monitor.usageStats)
@@ -185,7 +185,7 @@ class UtilMonitor(threading.Thread):
                 endTime = self.endTime + 10 # Safety margin HAX
         entries = [stat[1] for stat in statsList if stat[0] >= startTime and stat[0] <= endTime]
         numEntries = len(entries)
-        
+
         accumulator = {}
         for entry in entries:
             for cpuid in  entry.keys():
